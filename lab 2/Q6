@@ -1,0 +1,53 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+struct Marks{
+	float Sub1;
+	float Sub2;
+	float Sub3;
+	void avg(){
+		float average = (Sub1+Sub2+Sub3)/3;
+		cout<<"Average"<< average << endl;
+	}
+};
+
+struct StudentRecord{
+    string name;
+    int rollNumber;
+    Marks mark;
+};
+
+int main() {
+    int n;
+    cout << "Enter the number of Students (n): ";
+    cin >> n;
+    cout << endl;
+    
+    StudentRecord* std = new StudentRecord[n];
+    
+    for (int i = 0; i < n; i++) {
+        cout << "STUDENT RECORD [" << i + 1 << "]" << endl;
+        cout << "Enter name: ";
+        cin >> std[i].name;
+        cout << "Enter Roll Number: ";
+        cin >> std[i].rollNumber;
+       
+       cout << "Enter Marks:" << endl;
+       cout << "Subject 1:";
+       cin >> std[i].mark.Sub1;
+	   cout << "Subject 2:";
+       cin >> std[i].mark.Sub2;
+	   cout << "Subject 3:";
+       cin >> std[i].mark.Sub3;
+    }
+  cout << endl << "Student Details and Marks:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "Student Name: " << std[i].name << endl;
+        cout << "Roll Number: " << std[i].rollNumber << endl;
+        std[i].mark.avg(); 
+}
+    delete[] std;
+
+    return 0;
+}
