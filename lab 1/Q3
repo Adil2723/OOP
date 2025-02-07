@@ -1,0 +1,32 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    string event1[5];
+    string event2[5];
+    const int donationPerParticipant = 10;
+    int count1 = 0, count2 = 0;
+
+    cout << "Enter the names of participants (max 5) for two events:" << endl;
+
+    cout << "Enter participants for Event 1:" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << "Participant " << i + 1 << ": ";
+        cin >> event1[i];
+        if (!event1[i].empty()) count1++;      }
+
+    cout << "Enter participants for Event 2:" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << "Participant " << i + 1 << ": ";
+        cin >> event2[i];
+        if (!event2[i].empty()) count2++;  
+    }
+
+    // Calculate Total Donations
+    int totalDonations = (count1 + count2) * donationPerParticipant;
+    cout << "\nTotal donation collected: $" << totalDonations << endl;
+
+    return 0;
+}
