@@ -1,0 +1,36 @@
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+int main() {
+    string event1[5];
+    string event2[5];
+
+    cout << "Enter the names of participants (max 5) for two events:" << endl;
+
+    cout << "Enter participants for Event 1:" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << "Participant " << i + 1 << ": ";
+     cin>> event1[i];
+     getchar();
+    }
+
+    cout << "Enter participants for Event 2:" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << "Participant " << i + 1 << ": ";
+       cin>> event2[i];
+     getchar();
+}
+    cout << "\nParticipants for Event 1:" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << i + 1 << ". " << event1[i] << endl;
+    }
+
+    cout << "\nParticipants for Event 2:" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << i + 1 << ". " << event2[i] << endl;
+    }
+
+    return 0;
+}
