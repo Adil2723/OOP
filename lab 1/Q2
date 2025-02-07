@@ -1,0 +1,52 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    string event1[5];
+    string event2[5];
+    string found;
+    bool foundParticipant = false;
+    cout << "Enter the names of participants (max 5) for two events:" << endl;
+    cout << "Enter participants for Event 1:" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << "Participant " << i + 1 << ": ";
+        cin >> event1[i];
+    }
+    cout << "Enter participants for Event 2:" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << "Participant " << i + 1 << ": ";
+        cin >> event2[i];
+    }
+    cout << "\nParticipants for Event 1:" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << i + 1 << ". " << event1[i] << endl;
+    }
+    cout << "\nParticipants for Event 2:" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << i + 1 << ". " << event2[i] << endl;
+    }
+    cout << "\nSearch Participant: ";
+    cin >> found;
+    for (int i = 0; i < 5; i++) {
+        if (event1[i] == found) {
+            cout << found << " is in Event 1." << endl;
+            foundParticipant = true;
+            break;
+        }
+    }
+    for (int i = 0; i < 5; i++) {
+        if (event2[i] == found) {
+            cout << found << " is in Event 2." << endl;
+            foundParticipant = true;
+            break;
+        }
+    }
+
+    if (!foundParticipant) {
+        cout << "Invalid Participant" << endl;
+    }
+
+    return 0;
+}
