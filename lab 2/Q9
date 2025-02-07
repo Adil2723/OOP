@@ -1,0 +1,59 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+struct Product {
+    int productID;
+    string name;
+    int quantity;
+    float price;
+};
+
+void inputProductDetails(Product* pdt) {
+    cout << "Enter Product ID: ";
+    cin >> pdt->productID;
+    cin.ignore();  // To ignore the leftover newline character from cin
+    cout << "Enter Product Name: ";
+    getline(cin, pdt->name);
+    cout << "Enter Quantity: ";
+    cin >> pdt->quantity;
+    cout << "Enter Price: ";
+    cin >> pdt->price;
+}
+
+void displayProductDetails(Product* pdt) {
+    cout << "Product ID: " << pdt->productID << endl;
+    cout << "Name: " << pdt->name << endl;
+    cout << "Quantity: " << pdt->quantity << endl;
+    cout << "Price: " << pdt->price << endl;
+    cout << "Total Value: " << pdt->quantity * pdt->price << endl;  // Corrected to use -> for pointer dereferencing
+    cout << "-------------------------------" << endl;
+}
+
+int main() {
+    int n;
+    cout << "Enter the number of Products: ";
+    cin >> n;
+    cout << endl;
+
+    Product* pdt = new Product[n];  
+
+    for (int i = 0; i < n; i++) {
+        cout << "Enter details for product " << i + 1 << ":" << endl;
+        inputProductDetails(&pdt[i]);  
+    }
+
+    float totalValue = 0;
+    cout << "\nProduct Inventory Details:" << endl;
+    for (int i = 0; i < n; i++) {
+        displayProductDetails(&pdt[i]);  
+        totalValue += pdt[i].quantity * pdt[i].price; 
+    }
+
+    cout << "-------------------------------" << endl;
+    cout << "Total value of inventory: " << totalValue << endl;
+
+    delete[] pdt; 
+
+    return 0;
+}
