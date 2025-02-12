@@ -1,0 +1,99 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class MusicPlayer {
+private:
+    static const int MAX_SONGS = 100;
+    string playlist[MAX_SONGS];
+    string currentlyPlayingSong;
+    int totalSongs;
+
+public:
+    MusicPlayer() {
+        totalSongs = 0;
+        currentlyPlayingSong = "";
+    }
+
+    void addSong(string song) {
+        if (totalSongs < MAX_SONGS) {
+            playlist[totalSongs] = song;
+            totalSongs++;
+            cout << song << " has been added to the playlist." << endl;
+        } else {
+            cout << "Playlist is full, cannot add more songs." << endl;
+        }
+    }
+
+    void removeSong(string song) {
+        bool found = false;
+        for (int i = 0; i < totalSongs; i++) {
+            if (playlist[i] == song) {
+                for (int j = i; j < totalSongs - 1; j++) {
+                    playlist[j] = playlist[j + 1];
+                }
+                totalSongs--;
+                found = true;
+                cout << song << " has been removed from the playlist." << endl;
+                break;
+            }
+        }
+        if (!found) {
+            cout << song << " is not in the playlist." << endl;
+        }
+    }
+
+    void playSong(string song) {
+        bool found = false;
+        for (int i = 0; i < totalSongs; i++) {
+            if (playlist[i] == song) {
+                currentlyPlayingSong = song;
+                found = true;
+                cout << "Now playing: " << song << endl;
+                break;
+            }
+        }
+        if (!found) {
+            cout << song << " is not in the playlist." << endl;
+        }
+    }
+
+    void displayPlaylist() {
+        if (totalSongs == 0) {
+            cout << "No songs in the playlist." << endl;
+        } else {
+            cout << "Playlist: " << endl;
+            for (int i = 0; i < totalSongs; i++) {
+                cout << "- " << playlist[i] << endl;
+            }
+        }
+    }
+
+    void displayCurrentSong() {
+        if (currentlyPlayingSong == "") {
+            cout << "No song is currently playing." << endl;
+        } else {
+            cout << "Currently playing: " << currentlyPlayingSong << endl;
+        }
+    }
+};
+
+int main() {
+    MusicPlayer player;
+
+    player.addSong("Song 1");
+    player.addSong("Song 2");
+    player.addSong("Song 3");
+
+    player.displayPlaylist();
+
+    player.playSong("Song 2");
+    player.displayCurrentSong();
+
+    player.removeSong("Song 1");
+    player.displayPlaylist();
+
+    player.playSong("Song 1");
+
+    return 0;
+}
