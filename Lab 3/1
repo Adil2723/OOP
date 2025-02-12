@@ -1,0 +1,67 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Wallet {
+private:
+    string ownerName;
+    float totalBalance;
+    float transactionHistory; 
+
+public:
+    void setName(string n) {
+        ownerName = n;
+    }
+
+    void setBalance(float balance) {
+        totalBalance = balance;
+        transactionHistory = 0.0f; 
+    }
+    float getTotalBalance() {
+        return totalBalance;
+    }
+ 
+    void addMoney(float amount) {
+        totalBalance += amount;
+        transactionHistory += amount;
+        cout << amount << " added to the wallet." << endl;
+    }
+
+    void spendMoney(float amount) {
+        if (amount <= totalBalance) {
+            totalBalance -= amount;
+            transactionHistory += amount; 
+            cout << amount << " spent from the wallet." << endl;
+        } else {
+            cout << "Insufficient balance!" << endl;
+        }
+    }
+
+    void displayHistory() {
+        cout << "Owner: " << ownerName << endl;
+        cout << "Total Balance: " << totalBalance << endl;
+        cout << "Transaction History (Total amount transacted): " << transactionHistory << endl;
+    }
+};
+
+int main() {
+    Wallet myWallet;
+
+    myWallet.setName("Saad");
+    myWallet.setBalance(1000); 
+
+    myWallet.displayHistory();
+
+    myWallet.addMoney(50);
+    myWallet.displayHistory();
+
+
+    myWallet.spendMoney(600); 
+    myWallet.displayHistory();
+
+   
+    myWallet.spendMoney(500); 
+    myWallet.displayHistory();
+
+    return 0;
+}
