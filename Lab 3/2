@@ -1,0 +1,57 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+class FitnessTracker {
+private:
+    string userName;
+    int dailyStepGoal = 500; 
+    int stepsTaken;
+    float caloriesBurnt = 0.0;
+
+public:
+    void setName(string n) {
+        userName = n;
+    }
+
+    void calculate() {
+	    float perStep = 0.215;
+		caloriesBurnt = stepsTaken * perStep;
+        cout << "Expected calories burnt for " << stepsTaken << " steps: " << caloriesBurnt << endl; 
+        cout << caloriesBurnt << " Calories Burnt in " << stepsTaken << " steps." << endl;
+}
+
+    
+
+    void setStepsTaken(int s) {
+        stepsTaken = s;
+    }
+
+    void target() {
+        if (stepsTaken < dailyStepGoal) {
+            cout << "You did not complete the target of daily steps." << endl;
+        } else {
+            cout << "Target Completed!" << endl;
+        }
+    }
+
+    void displayDetails() {
+        cout << "User: " << userName << endl;
+        cout << "Daily Step Goal: " << dailyStepGoal << endl;
+        cout << "Steps Taken: " << stepsTaken << endl;
+        cout << "Calories Burnt: " << caloriesBurnt << endl;
+    }
+};
+
+int main() {
+FitnessTracker user1;
+
+   
+    user1.setName("Laiba");
+    user1.setStepsTaken(134);
+
+    user1.displayDetails();
+    user1.calculate();
+    user1.target();
+    return 0;
+}
