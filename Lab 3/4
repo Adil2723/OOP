@@ -1,0 +1,63 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Car {
+private:
+    string brand;
+    string model;
+    float fuelCapacity;
+    float currentFuel;
+
+public:
+    void setDetails(string b, string m, float c, float f) {
+        brand = b;
+        model = m;
+        fuelCapacity = c;
+        currentFuel = f;
+    }
+
+    void drive(float distance) {
+        float fuelConsumed = distance * 0.05; 
+        if (currentFuel >= fuelConsumed) {
+            currentFuel -= fuelConsumed;
+            cout << "You drove " << distance << " km. Fuel consumed: " << fuelConsumed << " liters." << endl;
+        } else {
+            cout << "Not enough fuel to drive this distance!" << endl;
+        }
+    }
+
+    void refuel(float amount) {
+        if (currentFuel + amount <= fuelCapacity) {
+            currentFuel += amount;
+            cout << "You have refueled " << amount << " liters. Current fuel level: " << currentFuel << " liters." << endl;
+        } else {
+            cout << "Cannot refuel beyond the tank capacity!" << endl;
+        }
+    }
+
+    void checkFuel() {
+        cout << "Current fuel level: " << currentFuel << " liters." << endl;
+        if (currentFuel <= fuelCapacity * 0.1) { 
+            cout << "Warning: Fuel level is low!" << endl;
+        }
+    }
+};
+
+int main() {
+    Car Car;
+    Car.setDetails("Toyota", "Corolla", 50, 20);  
+
+    Car.checkFuel();
+
+    Car.drive(200);  
+    Car.checkFuel();
+
+    Car.refuel(15); 
+    Car.checkFuel();
+
+    Car.drive(300);  
+    Car.checkFuel();
+
+    return 0;
+}
