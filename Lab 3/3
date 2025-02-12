@@ -1,0 +1,95 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Library {
+private:
+    static const int MAX_BOOKS = 100;
+    string bookList[MAX_BOOKS];
+    string borrowedBooks[MAX_BOOKS];
+    string availableBooks[MAX_BOOKS];
+    int totalBooks = 0;
+    int totalBorrowed = 0;
+    int totalAvailable = 0;
+
+public:
+    void addBook(string book) {
+        if (totalBooks < MAX_BOOKS) {
+            bookList[totalBooks] = book;
+            availableBooks[totalAvailable] = book;
+            totalBooks++;
+            totalAvailable++;
+            cout << book << " added to the library." << endl;
+        } else {
+            cout << "Library is full, cannot add more books." << endl;
+        }
+    }
+
+    void lendBook(string book, string studentName) {
+        int found = 0;
+        for (int i = 0; i < totalAvailable; i++) {
+            if (availableBooks[i] == book) {
+                borrowedBooks[totalBorrowed] = book;
+                totalBorrowed++;
+                availableBooks[i] = availableBooks[totalAvailable - 1];
+                totalAvailable--;
+                found = 1;
+                cout << studentName << " borrowed " << book << "." << endl;
+                break;
+            }
+        }
+        if (found == 0) {
+            cout << book << " is not available right now." << endl;
+        }
+    }
+
+    void returnBook(string book, string studentName) {
+        int found = 0;
+        for (int i = 0; i < totalBorrowed; i++) {
+            if (borrowedBooks[i] == book) {
+                availableBooks[totalAvailable] = book;
+                totalAvailable++;
+                borrowedBooks[i] = borrowedBooks[totalBorrowed - 1];
+                totalBorrowed--;
+                found = 1;
+                cout << studentName << " returned " << book << "." << endl;
+                break;
+            }
+        }
+        if (found == 0) {
+            cout << "This book was not borrowed by " << studentName << "." << endl;
+        }
+    }
+
+    void displayAvailableBooks() {
+        if (totalAvailable == 0) {
+            cout << "No books are available." << endl;
+        } else {
+            cout << "Available Books: " << endl;
+            for (int i = 0; i < totalAvailable; i++) {
+                cout << "- " << availableBooks[i] << endl;
+            }
+        }
+    }
+};
+
+int main() {
+    Library library;
+
+    library.addBook("C++ Programming");
+    library.addBook("Data Structures");
+    library.addBook("Operating Systems");
+
+    library.displayAvailableBooks();
+
+    library.lendBook("C++ Programming", "Hamza");
+    library.lendBook("Data Structures", "Ali");
+
+    library.displayAvailableBooks();
+
+    library.returnBook("C++ Programming", "Hamza");
+
+    library.displayAvailableBooks();
+
+    return 0;
+}
