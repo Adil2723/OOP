@@ -1,0 +1,92 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Car {
+private:
+    string brand;
+    string model;
+    double rentalPrice;
+    bool availability;
+
+public:
+    Car(string newBrand, string newModel, double newRentalPrice, bool newAvaibaility = true) {
+        brand = newBrand;
+        model = newModel;
+        rentalPrice = newRentalPrice;
+        availability = newAvaibaility;
+    }
+
+    void updateCarDetails(string newBrand, string newModel, double newRentalPrice) {
+        brand = newBrand;
+        model = newModel;
+        rentalPrice = newRentalPrice;
+        
+    }
+
+    bool isAvailable() const {
+        return availability;
+    }
+
+    void rentCar(int rentalDays) {
+        if (availability) {
+            availability = false;
+            applyDiscount(rentalDays);
+            cout << "Car rented successfully for " << rentalDays << " days." << endl;
+        } else {
+            cout << "Sorry, the car is already rented." << endl;
+        }
+    }
+
+    void returnCar() {
+        availability = true;
+        cout << "Car returned and is now available for rent." << endl;
+    }
+    
+    void applyDiscount(int rentalDays){
+    	double discount = 0.0;
+    	if(rentalDays>10){
+    		discount = 0.1;
+		} else if (rentalDays>5){
+			discount = 0.05;
+		}
+		
+		if (discount>0){
+			double discountAmount = rentalPrice * discount;
+            rentalPrice -= discountAmount; 
+            cout << "Discount applied: " << (discount * 100) << "%" << endl;
+        }
+        cout << "Rental price after discount: $" << rentalPrice << " per day" << endl;
+    }
+		
+
+    void displayDetails() const {
+        cout << "Car Brand: " << brand << endl;
+        cout << "Car Model: " << model << endl;
+        cout << "Rental Price: $" << rentalPrice << " per day" << endl;
+        cout << "Availability: " << (availability ? "Available" : "Rented") << endl;
+    }
+};
+
+int main() {
+    
+    Car c1("Toyota", "Corolla", 45.99);
+
+    c1.displayDetails();
+
+    cout << "\nRenting the car for 6 days...\n";
+    c1.rentCar(6);
+
+    cout << "\nAttempting to rent again after renting...\n";
+    c1.rentCar(4);
+
+    c1.returnCar();
+
+    cout << "\nRenting the car for 12 days...\n";
+    c1.rentCar(12);
+
+    cout << "\nUpdated car details after rent:\n";
+    c1.displayDetails();
+
+    return 0;
+}
