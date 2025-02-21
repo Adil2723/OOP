@@ -1,0 +1,109 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Car {
+private:
+    string brand;
+    string model;
+    double rentalPrice;
+    bool availability;
+    double totalRevenue;
+
+public:
+    Car(string newBrand, string newModel, double newRentalPrice, bool newAvailability = true) {
+        brand = newBrand;
+        model = newModel;
+        rentalPrice = newRentalPrice;
+        availability = newAvailability;
+        totalRevenue = 0.0;
+    }
+    
+    Car(const Car &c2) {
+        brand = c2.brand;
+        model = c2.model;
+        rentalPrice = c2.rentalPrice;
+        availability = c2.availability; 
+        totalRevenue = c2.totalRevenue;
+        cout << "Car copied successfully." << endl;
+    }
+    
+    ~Car() {
+        cout << "Car object destroyed." << endl;
+    }
+
+    void updateCarDetails(string newBrand, string newModel, double newRentalPrice) {
+        brand = newBrand;
+        model = newModel;
+        rentalPrice = newRentalPrice;
+  }
+
+    bool isAvailable() const {
+        return availability;
+    }
+
+    void rentCar(int rentalDays) {
+        if (availability) {
+            availability = false;
+            double total = rentalPrice * rentalDays;
+            this->totalRevenue += total; 
+            applyDiscount(rentalDays);
+            cout << "Car rented successfully for " << rentalDays << " days." << endl;
+        } else {
+            cout << "Sorry, the car is already rented." << endl;
+        }
+    }
+
+
+    void returnCar() {
+        availability = true;
+        cout << "Car returned and is now available for rent." << endl;
+    }
+
+    void applyDiscount(int rentalDays) {
+        double discount = 0.0;
+        if (rentalDays > 10) {
+            discount = 0.1; 
+        } else if (rentalDays > 5) {
+            discount = 0.05;  
+        }
+
+        if (discount > 0) {
+            double discountAmount = rentalPrice * discount;
+            rentalPrice -= discountAmount;  
+            cout << "Discount applied: " << (discount * 100) << "%" << endl;
+        }
+        cout << "Rental price after discount: $" << rentalPrice << " per day" << endl;
+    }
+
+    void displayDetails() const {
+        cout << "Car Brand: " << brand << endl;
+        cout << "Car Model: " << model << endl;
+        cout << "Rental Price: $" << rentalPrice << " per day" << endl;
+        cout << "Availability: " << (availability ? "Available" : "Rented") << endl;
+        cout << "Total Revenue Generated $ " <<  totalRevenue << endl;
+    }
+};
+
+int main() {
+    Car c1("Toyota", "Corolla", 45.99);
+
+    cout << "\nOriginal Car details:\n";
+    c1.displayDetails();
+
+    cout << "\nRenting the car for 6 days...\n";
+    c1.rentCar(6);
+
+    cout << "\nAttempting to rent again after renting...\n";
+    c1.rentCar(4);
+
+    c1.returnCar();
+
+    cout << "\nRenting the car for 12 days...\n";
+    c1.rentCar(12);
+
+    cout << "\nUpdated Car details after rental:\n";
+    c1.displayDetails();
+
+    return 0;
+}
