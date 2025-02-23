@@ -31,9 +31,11 @@ This repository contains all the lab tasks, assignments, and the final project s
   - Automatic clearing of previous board state (using `system(cls)`) 
   - Additional features under development
 
+### 4. Practice Questions
+- Trying to strengthen my logic-building skills by practicing random questions
 ## How to Use
-1. Open the respective folders for **Lab Tasks**, **Assignments**, and **Project**.
-2. Each folder contains code files with explanations.
+1. Open the respective folders for **Lab Tasks**, **Assignments**, **Project** and **Practice Questions**
+2. Each folder contains code files.
 3. Run the C++ programs using a suitable compiler (e.g., GCC, Code::Blocks, or Visual Studio).
 
 ## Author
