@@ -1,0 +1,217 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+const int MAX_STUDENTS = 10;  // Maximum number of students
+const int MAX_ROUTES = 5;     // Maximum number of routes
+
+class TransportationCard {
+private:
+    string cardID;
+    bool status; // true for active, false for inactive
+public:
+    TransportationCard(string id) : cardID(id), status(false) {}
+    void activateCard() { status = true; }
+    void deactivateCard() { status = false; }
+    bool getStatus() { return status; }
+};
+
+class Payment {
+private:
+    float amount;
+    bool status;
+public:
+    Payment(float amt) : amount(amt), status(false) {}
+    void processPayment() {
+        cout << "Processing payment of " << amount << endl;
+        status = true;
+    }
+    bool getStatus() { return status; }
+};
+
+class Attendance {
+private:
+    string studentID;
+    bool status;
+    string timestamp;
+public:
+    Attendance(string id) : studentID(id), status(false) {}
+    void markAttendance() {
+        cout << "Attendance marked for student " << studentID << endl;
+        status = true;
+    }
+};
+
+class Student {
+private:
+    int studentID;
+    string name;
+    TransportationCard* transportCard;
+    Payment* payment;
+public:
+    Student(int id, string studentName, TransportationCard* card) 
+        : studentID(id), name(studentName), transportCard(card), payment(nullptr) {}
+
+    void registerStudent() {
+        cout << "Student " << name << " registered." << endl;
+    }
+
+    void payFees(float amount) {
+        payment = new Payment(amount);
+        payment->processPayment();
+        transportCard->activateCard();
+    }
+
+    void checkAttendance() {
+        if (transportCard->getStatus()) {
+            Attendance attendance(to_string(studentID));
+            attendance.markAttendance();
+        }
+        else {
+            cout << "Card is inactive. Cannot mark attendance." << endl;
+        }
+    }
+
+    int getStudentID() const { return studentID; }
+    string getName() const { return name; }
+};
+
+class BusRoute {
+private:
+    int routeID;
+    string stops[5];  // Maximum 5 stops per route
+    int stopCount;
+    Student* assignedStudents[5];  // Maximum 5 students per route
+    int studentCount;
+
+public:
+    BusRoute(int id) : routeID(id), stopCount(0), studentCount(0) {}
+
+    void addStop(string stop) {
+        if (stopCount < 5) {
+            stops[stopCount] = stop;
+            stopCount++;
+        }
+        else {
+            cout << "Cannot add more stops. Max 5 stops per route." << endl;
+        }
+    }
+
+    void assignStudent(Student* student) {
+        if (studentCount < 5) {
+            assignedStudents[studentCount] = student;
+            studentCount++;
+            cout << "Assigned student " << student->getName() << " to route " << routeID << endl;
+        }
+        else {
+            cout << "Cannot assign more students to this route. Max 5 students per route." << endl;
+        }
+    }
+
+    void showRoute() {
+        cout << "Route ID: " << routeID << endl;
+        cout << "Stops: ";
+        for (int i = 0; i < stopCount; i++) {
+            cout << stops[i] << " ";
+        }
+        cout << endl;
+    }
+
+    int getRouteID() const { return routeID; }
+};
+
+class TransportationSystem {
+private:
+    Student* students[MAX_STUDENTS];
+    int studentCount;
+    BusRoute* routes[MAX_ROUTES];
+    int routeCount;
+
+public:
+    TransportationSystem() : studentCount(0), routeCount(0) {}
+
+    void registerStudent(int id, string name, string cardID) {
+        if (studentCount < MAX_STUDENTS) {
+            TransportationCard* card = new TransportationCard(cardID);
+            Student* student = new Student(id, name, card);
+            student->registerStudent();
+            students[studentCount] = student;
+            studentCount++;
+        }
+        else {
+            cout << "Cannot register more students. Max " << MAX_STUDENTS << " students allowed." << endl;
+        }
+    }
+
+    void assignRoute(int studentID, int routeID) {
+        Student* student = nullptr;
+        BusRoute* route = nullptr;
+
+        for (int i = 0; i < studentCount; i++) {
+            if (students[i]->getStudentID() == studentID) {
+                student = students[i];
+                break;
+            }
+        }
+
+        for (int i = 0; i < routeCount; i++) {
+            if (routes[i]->getRouteID() == routeID) {
+                route = routes[i];
+                break;
+            }
+        }
+
+        if (student && route) {
+            route->assignStudent(student);
+        }
+        else {
+            cout << "Student or Route not found!" << endl;
+        }
+    }
+
+    void trackAttendance(int studentID) {
+        Student* student = nullptr;
+        for (int i = 0; i < studentCount; i++) {
+            if (students[i]->getStudentID() == studentID) {
+                student = students[i];
+                break;
+            }
+        }
+
+        if (student) {
+            student->checkAttendance();
+        }
+        else {
+            cout << "Student not found!" << endl;
+        }
+    }
+
+    void addBusRoute(int routeID) {
+        if (routeCount < MAX_ROUTES) {
+            BusRoute* route = new BusRoute(routeID);
+            routes[routeCount] = route;
+            routeCount++;
+        }
+        else {
+            cout << "Cannot add more routes. Max " << MAX_ROUTES << " routes allowed." << endl;
+        }
+    }
+};
+
+int main() {
+    TransportationSystem system;
+
+    system.registerStudent(1, "Ali", "21k-0987");
+    system.registerStudent(2, "Bilal", "24k-0789");
+
+    system.addBusRoute(101);
+    system.addBusRoute(102);
+
+    system.assignRoute(1, 101);
+    system.assignRoute(2, 102);
+
+    system.trackAttendance(1);
+
+    return 0;
+}
