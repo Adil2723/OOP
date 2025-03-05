@@ -1,0 +1,56 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Apartment{
+private:
+	int id;
+	string address;
+	string* owner;
+	
+public:
+	Apartment(int id, const string& address, const string& ownerName){
+		this->id = id;
+		this->address = address;
+		this->owner = new string(ownerName);
+	}	
+	Apartment(const Apartment& next){
+		id = next.id;
+		address = next.address;
+		owner = next.owner;
+	}
+	~Apartment(){
+	}
+	void displayDetails() const {
+        cout << "Apartment ID: " << id << endl;
+        cout << "Address: " << address << endl;
+        cout << "Owner: " << *owner << endl; 
+    }
+    string* getOwner() const {
+        return owner;
+    }
+};
+int main(){
+	Apartment apt("1,Plot 218H Block 2","Adil");
+	Apartment apt1 = apt;
+	
+	cout << "Details of apt:" << endl;
+    apt.displayDetails();
+    cout << endl;
+
+    cout << "Details of apt1 (managed by a new agent):" << endl;
+    apt1.displayDetails();
+    cout << endl;
+    
+    *apt1.getOwner() = "Saeed";
+     cout << "After transferring the apartment to a new owner:" << endl;
+    cout << "Details of apt:" << endl;
+    apt.displayDetails();
+    cout << endl;
+
+    cout << "Details of apt1:" << endl;
+    apt1.displayDetails();
+
+    return 0;
+}
+}
