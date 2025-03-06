@@ -1,0 +1,87 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Level {
+private:
+    string levelTitle;
+    int difficulty;
+    Level* nextLevel;
+
+public:
+    Level(const string& title, int diff)
+        : levelTitle(title), difficulty(diff), nextLevel(nullptr) {}
+
+    void display() const {
+        cout << "Level Title: " << levelTitle << ", Difficulty: " << difficulty << endl;
+    }
+
+    string getTitle() const {
+        return levelTitle;
+    }
+
+    int getDifficulty() const {
+        return difficulty;
+    }
+
+    Level* getNextLevel() const {
+        return nextLevel;
+    }
+
+    void setNextLevel(Level* next) {
+        nextLevel = next;
+    }
+};
+
+class VideoGame {
+private:
+    string gameTitle;
+    Level* levels;
+
+public:
+    VideoGame(const string& title) : gameTitle(title), levels(nullptr) {}
+
+    void addLevel(const string& title, int difficulty) {
+        Level* newLevel = new Level(title, difficulty);
+        if (levels == nullptr) {
+            levels = newLevel;
+        } else {
+            Level* temp = levels;
+            while (temp->getNextLevel() != nullptr) {
+                temp = temp->getNextLevel();
+            }
+            temp->setNextLevel(newLevel);
+        }
+    }
+
+    void displayGameDetails() const {
+        cout << "Game Title: " << gameTitle << endl;
+        cout << "Levels: " << endl;
+        Level* temp = levels;
+        while (temp != nullptr) {
+            temp->display();
+            temp = temp->getNextLevel();
+        }
+    }
+
+    ~VideoGame() {
+        Level* temp = levels;
+        while (temp != nullptr) {
+            Level* next = temp->getNextLevel();
+            delete temp;
+            temp = next;
+        }
+    }
+};
+
+int main() {
+    VideoGame game("Adventure Quest");
+
+    game.addLevel("Forest Adventure", 5);
+    game.addLevel("Mountain Climb", 7);
+    game.addLevel("Cave Exploration", 6);
+
+    game.displayGameDetails();
+
+    return 0;
+}
