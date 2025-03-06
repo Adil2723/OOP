@@ -1,0 +1,111 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Employee;
+
+class Project {
+private:
+    string title;
+    string deadline;
+    Employee* employeeList;
+    Project* nextProject;
+
+public:
+    Project(const string& title, const string& deadline)
+        : title(title), deadline(deadline), employeeList(nullptr), nextProject(nullptr) {}
+
+    void addEmployee(Employee* employee);
+
+    void display() const {
+        cout << "Project: " << title << ", Deadline: " << deadline << endl;
+        cout << "Assigned Employees: " << endl;
+        Employee* emp = employeeList;
+        while (emp != nullptr) {
+            emp->display();
+            emp = emp->getNextEmployee();
+        }
+    }
+
+    Project* getNextProject() const {
+        return nextProject;
+    }
+
+    void setNextProject(Project* next) {
+        nextProject = next;
+    }
+};
+
+class Employee {
+private:
+    string name;
+    string designation;
+    Project* projectList;
+    Employee* nextEmployee;
+
+public:
+    Employee(const string& name, const string& designation)
+        : name(name), designation(designation), projectList(nullptr), nextEmployee(nullptr) {}
+
+    void addProject(Project* project);
+
+    void display() const {
+        cout << "Employee: " << name << ", Designation: " << designation << endl;
+    }
+
+    Employee* getNextEmployee() const {
+        return nextEmployee;
+    }
+
+    void setNextEmployee(Employee* next) {
+        nextEmployee = next;
+    }
+};
+
+void Project::addEmployee(Employee* employee) {
+    if (employeeList == nullptr) {
+        employeeList = employee;
+    } else {
+        Employee* temp = employeeList;
+        while (temp->getNextEmployee() != nullptr) {
+            temp = temp->getNextEmployee();
+        }
+        temp->setNextEmployee(employee);
+    }
+}
+
+void Employee::addProject(Project* project) {
+    if (projectList == nullptr) {
+        projectList = project;
+    } else {
+        Project* temp = projectList;
+        while (temp->getNextProject() != nullptr) {
+            temp = temp->getNextProject();
+        }
+        temp->setNextProject(project);
+    }
+
+    project->addEmployee(this);
+}
+
+int main() {
+    Project proj1("Project A", "2025-12-31");
+    Project proj2("Project B", "2025-06-30");
+
+    Employee emp1("Ali", "Software Engineer");
+    Employee emp2("Hasan", "Data Scientist");
+
+    emp1.addProject(&proj1);
+    emp1.addProject(&proj2);
+    emp2.addProject(&proj1);
+
+    cout << "Details of Project 1:" << endl;
+    proj1.display();
+    cout << endl;
+
+    cout << "Details of Project 2:" << endl;
+    proj2.display();
+    cout << endl;
+
+    return 0;
+}
