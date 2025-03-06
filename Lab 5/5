@@ -1,0 +1,70 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Doctor {
+private:
+    string name;
+    string specialization;
+    float experience;
+    Doctor* nextDoc;
+
+public:
+    Doctor(string n, string s, float e) : name(n), specialization(s), experience(e), nextDoc(nullptr) {}
+
+    void display() const {
+        cout << "Doctor Name: " << name << endl;
+        cout << "Specialization: " << specialization << endl;
+        cout << "Experience: " << experience << " years" << endl;
+    }
+
+    Doctor* getNextDoctor() const {
+        return nextDoc;
+    }
+
+    void setNextDoctor(Doctor* next) {
+        nextDoc = next;
+    }
+};
+
+class Hospital {
+private:
+    string hospitalName;
+    Doctor* doctorList;
+
+public:
+    Hospital(const string& hospitalName) : hospitalName(hospitalName), doctorList(nullptr) {}
+
+    void addDoctor(Doctor* doctor) {
+        doctor->setNextDoctor(doctorList);
+        doctorList = doctor;
+    }
+
+    void display() const {
+        cout << "Hospital Name: " << hospitalName << endl;
+        cout << "Doctors currently working in the hospital:" << endl;
+
+        Doctor* temp = doctorList;
+        while (temp != nullptr) {
+            temp->display();
+            cout << "----------------------" << endl;
+            temp = temp->getNextDoctor();
+        }
+    }
+};
+
+int main() {
+    Doctor doctor1("Dr. Ali", "Cardiologist", 10);
+    Doctor doctor2("Dr. Ayesha", "Neurologist", 7);
+    Doctor doctor3("Dr. Ahmed", "Pediatrician", 12);
+
+    Hospital hospital("Lahore Medical Center");
+
+    hospital.addDoctor(&doctor1);
+    hospital.addDoctor(&doctor2);
+    hospital.addDoctor(&doctor3);
+
+    hospital.display();
+
+    return 0;
+}
