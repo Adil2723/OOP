@@ -1,0 +1,72 @@
+#include <iostream>
+using namespace std;
+
+class BankAccount {
+protected:
+    int accountId;
+    float accountBalance;
+public:
+    BankAccount(int id, float balance) : accountId(id), accountBalance(balance) {}
+
+    void showAccountDetails() {
+        cout << "Account ID: " << accountId << endl;
+        cout << "Account Balance: $" << accountBalance << endl;
+    }
+};
+
+class Savings : public BankAccount {
+private:
+    float annualInterestRate;
+public:
+    Savings(int id, float balance, float rate) : BankAccount(id, balance), annualInterestRate(rate) {}
+
+    void showAccountDetails() {
+        BankAccount::showAccountDetails();
+        cout << "Annual Interest Rate: " << annualInterestRate << "%" << endl;
+    }
+};
+
+class Checking : public BankAccount {
+private:
+    float maxOverdraftLimit;
+public:
+    Checking(int id, float balance, float overdraft) : BankAccount(id, balance), maxOverdraftLimit(overdraft) {}
+
+    void showAccountDetails() {
+        BankAccount::showAccountDetails();
+        cout << "Maximum Overdraft Limit: $" << maxOverdraftLimit << endl;
+    }
+};
+
+int main() {
+    int accountType;
+    int id;
+    float balance, interestRate, overdraftLimit;
+
+    cout << "Enter account type (1 for Savings, 2 for Checking): ";
+    cin >> accountType;
+
+    cout << "Enter account ID: ";
+    cin >> id;
+
+    cout << "Enter account balance: ";
+    cin >> balance;
+
+    if (accountType == 1) {
+        cout << "Enter annual interest rate: ";
+        cin >> interestRate;
+        
+        Savings savingsAccount(id, balance, interestRate);
+        savingsAccount.showAccountDetails();
+    } else if (accountType == 2) {
+        cout << "Enter maximum overdraft limit: ";
+        cin >> overdraftLimit;
+        
+        Checking checkingAccount(id, balance, overdraftLimit);
+        checkingAccount.showAccountDetails();
+    } else {
+        cout << "Invalid account type entered!" << endl;
+    }
+
+    return 0;
+}
