@@ -1,0 +1,46 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Employee{
+protected:
+   string name;
+   float salary;	
+public:
+	Employee(string name,float salary) : name(name), salary(salary){}
+	
+	void displayDetails(){
+		cout << "Name: " << name << endl;
+		cout << "Salary: " << salary << endl;
+	}
+};
+
+class Manager : public Employee {
+private:
+	float bonus;
+public:
+	Manager(string name, float salary, float bonus) : Employee(name,salary), bonus(bonus){}
+	
+	void displayDetails(){
+		Employee::displayDetails();
+		cout << "Bonus: " << bonus << endl;
+	}
+};
+
+int main(){
+	string name;
+    float salary, bonus;
+    
+    cout << "Enter manager's name: ";
+    getline(cin, name);
+    
+    cout << "Enter manager's salary: ";
+    cin >> salary;
+    
+    cout << "Enter manager's bonus: ";
+    cin >> bonus;
+	Manager m1(name, salary, bonus);
+	m1.displayDetails();
+	
+	return 0;
+}
