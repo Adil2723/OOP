@@ -1,0 +1,79 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Vehicle {
+protected:
+    string brand;
+    int speed;
+public:
+    Vehicle(string b, int s) : brand(b), speed(s) {}
+
+    virtual void displayDetails() {
+        cout << "Brand: " << brand << endl;
+        cout << "Speed: " << speed << " km/h" << endl;
+    }
+};
+
+class Car : public Vehicle {
+private:
+    int doors;
+public:
+    Car(string b, int s, int d) : Vehicle(b, s), doors(d) {}
+
+    void displayDetails() override {
+        Vehicle::displayDetails();
+        cout << "Doors: " << doors << endl;
+    }
+};
+
+class ElectricCar : public Car {
+private:
+    int batteryLife;
+public:
+    ElectricCar(string b, int s, int d, int life) : Car(b, s, d), batteryLife(life) {}
+
+    void displayDetails() {
+        Car::displayDetails();
+        cout << "Battery Life: " << batteryLife << "%" << endl;
+    }
+};
+
+int main() {
+    string brand;
+    int speed, doors, batteryLife;
+
+    cout << "Enter electric car's brand: ";
+    getline(cin, brand);
+    if (brand.empty()) {
+        cout << "Brand cannot be empty. Please enter the brand: ";
+        getline(cin, brand);
+    }
+
+    cout << "Enter electric car's speed (km/h): ";
+    cin >> speed;
+    if (speed < 0) {
+        cout << "Speed cannot be negative. Please enter a valid speed: ";
+        cin >> speed;
+    }
+
+    cout << "Enter number of doors: ";
+    cin >> doors;
+    if (doors < 1) {
+        cout << "Number of doors must be at least 1. Please enter a valid number: ";
+        cin >> doors;
+    }
+
+    cout << "Enter battery life (in %): ";
+    cin >> batteryLife;
+    if (batteryLife < 0 || batteryLife > 100) {
+        cout << "Battery life must be between 0 and 100%. Please enter a valid battery life: ";
+        cin >> batteryLife;
+    }
+
+    ElectricCar ecar(brand, speed, doors, batteryLife);
+    ecar.displayDetails();
+
+    return 0;
+}
+
