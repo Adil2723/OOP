@@ -1,0 +1,95 @@
+#include <iostream>
+using namespace std;
+
+class Device {
+protected:
+    int deviceID;
+    bool status;
+public:
+    Device(int id, bool stat) : deviceID(id), status(stat) {}
+
+    void displayDetails() {
+        cout << "Device ID: " << deviceID << endl;
+        cout << "Status: " << (status ? "Active" : "Inactive") << endl;
+    }
+};
+
+class SmartPhone : public Device {
+protected:
+    float screenSize;
+public:
+    SmartPhone(int id, bool stat, float screen) : Device(id, stat), screenSize(screen) {}
+
+    void displayDetails() {
+        Device::displayDetails();
+        cout << "Screen Size: " << screenSize << " inches" << endl;
+    }
+};
+
+class SmartWatch : public Device {
+protected:
+    bool heartRateMonitor;
+public:
+    SmartWatch(int id, bool stat, bool monitor) : Device(id, stat), heartRateMonitor(monitor) {}
+
+    void displayDetails() {
+        Device::displayDetails();
+        cout << "Heart Rate Monitor: " << (heartRateMonitor ? "Yes" : "No") << endl;
+    }
+};
+
+class SmartWearable : public SmartPhone, public SmartWatch {
+private:
+    int stepCounter;
+public:
+    SmartWearable(int id, bool stat, float screen, bool monitor, int steps)
+        : SmartPhone(id, stat, screen), SmartWatch(id, stat, monitor), stepCounter(steps) {}
+
+    void displayDetails() {
+        SmartPhone::displayDetails();
+        SmartWatch::displayDetails();
+        cout << "Step Counter: " << stepCounter << " steps" << endl;
+    }
+};
+
+int main() {
+    int deviceID, steps;
+    bool status, heartRateMonitor;
+    float screenSize;
+
+    cout << "Enter device ID: ";
+    cin >> deviceID;
+
+    cout << "Enter device status (1 for Active, 0 for Inactive): ";
+    cin >> status;
+    if (status != 0 && status != 1) {
+        cout << "Invalid status! Please enter 1 for Active or 0 for Inactive: ";
+        cin >> status;
+    }
+
+    cout << "Enter screen size (in inches): ";
+    cin >> screenSize;
+    if (screenSize <= 0) {
+        cout << "Invalid screen size! Please enter a positive number for screen size: ";
+        cin >> screenSize;
+    }
+
+    cout << "Enter heart rate monitor status (1 for Yes, 0 for No): ";
+    cin >> heartRateMonitor;
+    if (heartRateMonitor != 0 && heartRateMonitor != 1) {
+        cout << "Invalid input! Please enter 1 for Yes or 0 for No: ";
+        cin >> heartRateMonitor;
+    }
+
+    cout << "Enter step counter value (non-negative): ";
+    cin >> steps;
+    if (steps < 0) {
+        cout << "Invalid step counter value! Please enter a non-negative value: ";
+        cin >> steps;
+    }
+
+    SmartWearable w1(deviceID, status, screenSize, heartRateMonitor, steps);
+    w1.displayDetails();
+
+    return 0;
+}
