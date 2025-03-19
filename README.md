@@ -42,6 +42,6 @@ A comprehensive project developed in **C++** as the final submission for the OOP
 **Muhammad Adil Saeed**  
 📚 BSCS - FAST University  
 📧 masadil942@gmail.com  
-🔗 [GitHub](https://github.com/AdilSaeed942)  
+🔗 [GitHub](https://github.com/Adil2723)  
 
 For any queries or contributions, feel free to reach out! 🚀
