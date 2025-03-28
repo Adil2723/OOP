@@ -1,0 +1,144 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Product {
+protected:
+    int productID;
+    string productName;
+    double price;
+    int stockQuantity;
+
+public:
+    Product(int id, string name, double pr, int quantity = 0)
+        : productID(id), productName(name), price(pr), stockQuantity(quantity) {}
+
+    virtual void applyDiscount(double discountPercentage) {
+        price -= price * (discountPercentage / 100);
+    }
+
+    virtual double calculateTotalPrice(int quantity) {
+        return price * quantity;
+    }
+
+    virtual void displayProductInfo() const {
+        cout << "Product ID: " << productID << endl;
+        cout << "Product Name: " << productName << endl;
+        cout << "Price: $" << price << endl;
+        cout << "Stock Quantity: " << stockQuantity << endl;
+    }
+
+    virtual ~Product() {}
+};
+
+class Book : public Product {
+private:
+    string author;
+    string genre;
+
+public:
+    Book(int id, string name, double pr, string auth, string gen, int quantity = 0)
+        : Product(id, name, pr, quantity), author(auth), genre(gen) {}
+
+    void displayProductInfo() const override {
+        Product::displayProductInfo();
+        cout << "Author: " << author << endl;
+        cout << "Genre: " << genre << endl;
+    }
+};
+
+class Electronics : public Product {
+private:
+    string brand;
+    int warrantyPeriod;
+
+public:
+    Electronics(int id, string name, double pr, string br, int warranty, int quantity = 0)
+        : Product(id, name, pr, quantity), brand(br), warrantyPeriod(warranty) {}
+
+    void displayProductInfo() const override {
+        Product::displayProductInfo();
+        cout << "Brand: " << brand << endl;
+        cout << "Warranty Period: " << warrantyPeriod << " months" << endl;
+    }
+};
+
+class Clothing : public Product {
+private:
+    string size;
+    string color;
+    string fabricMaterial;
+
+public:
+    Clothing(int id, string name, double pr, string sz, string cl, string fabric, int quantity = 0)
+        : Product(id, name, pr, quantity), size(sz), color(cl), fabricMaterial(fabric) {}
+
+    void applyDiscount(double discountPercentage) override {
+        if (seasonalOffer()) {
+            price -= price * (discountPercentage / 2);
+        } else {
+            Product::applyDiscount(discountPercentage);
+        }
+    }
+
+    bool seasonalOffer() const {
+        return true;
+    }
+
+    void displayProductInfo() const override {
+        Product::displayProductInfo();
+        cout << "Size: " << size << endl;
+        cout << "Color: " << color << endl;
+        cout << "Fabric Material: " << fabricMaterial << endl;
+    }
+};
+
+class FoodItem : public Product {
+private:
+    string expirationDate;
+    int calories;
+
+public:
+    FoodItem(int id, string name, double pr, string expDate, int cal, int quantity = 0)
+        : Product(id, name, pr, quantity), expirationDate(expDate), calories(cal) {}
+
+    double calculateTotalPrice(int quantity) override {
+        double totalPrice = Product::calculateTotalPrice(quantity);
+        if (quantity > 10) {
+            totalPrice *= 0.9;
+        }
+        return totalPrice;
+    }
+
+    void displayProductInfo() const override {
+        Product::displayProductInfo();
+        cout << "Expiration Date: " << expirationDate << endl;
+        cout << "Calories: " << calories << " kcal" << endl;
+    }
+};
+
+double operator+(const Product& p1, const Product& p2) {
+    return p1.calculateTotalPrice(1) + p2.calculateTotalPrice(1);
+}
+
+ostream& operator<<(ostream& os, const Product& product) {
+    product.displayProductInfo();
+    return os;
+}
+
+int main() {
+    Book book1(101, "The Great Gatsby", 15.99, "F. Scott Fitzgerald", "Classic", 20);
+    Electronics electronic1(102, "Smartphone XYZ", 299.99, "XYZ Corp", 24, 50);
+    Clothing clothing1(103, "T-Shirt", 19.99, "M", "Red", "Cotton", 30);
+    FoodItem foodItem1(104, "Pizza", 9.99, "2025-12-31", 300, 40);
+
+    book1.displayProductInfo();
+    electronic1.displayProductInfo();
+    clothing1.displayProductInfo();
+    foodItem1.displayProductInfo();
+
+    cout << "Total Price of Book + Electronics: $" << book1 + electronic1 << endl;
+
+    return 0;
+}
