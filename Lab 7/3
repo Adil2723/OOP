@@ -1,0 +1,141 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Ticket {
+protected:
+    int ticketID;
+    string passengerName;
+    double price;
+    string date;  // Date of booking or travel
+    string destination;
+
+public:
+    Ticket(int id, string name, double pr, string d, string dest)
+        : ticketID(id), passengerName(name), price(pr), date(d), destination(dest) {}
+
+    virtual void reserve() {
+        cout << "Ticket reserved for " << passengerName << " to " << destination << endl;
+    }
+
+    virtual void cancel() {
+        cout << "Ticket canceled for " << passengerName << endl;
+    }
+
+    virtual void displayTicketInfo() const {
+        cout << "Ticket ID: " << ticketID << endl;
+        cout << "Passenger Name: " << passengerName << endl;
+        cout << "Price: $" << price << endl;
+        cout << "Date: " << date << endl;
+        cout << "Destination: " << destination << endl;
+    }
+
+    virtual ~Ticket() {}
+};
+
+class FlightTicket : public Ticket {
+private:
+    string airlineName;
+    string flightNumber;
+    string seatClass;
+
+public:
+    FlightTicket(int id, string name, double pr, string d, string dest, string airline, string flightNo, string seat)
+        : Ticket(id, name, pr, d, dest), airlineName(airline), flightNumber(flightNo), seatClass(seat) {}
+
+    void reserve() override {
+        Ticket::reserve();
+        cout << "Flight booked with airline " << airlineName << ", Flight Number: " << flightNumber << ", Seat Class: " << seatClass << endl;
+    }
+
+    void displayTicketInfo() const override {
+        Ticket::displayTicketInfo();
+        cout << "Airline: " << airlineName << endl;
+        cout << "Flight Number: " << flightNumber << endl;
+        cout << "Seat Class: " << seatClass << endl;
+    }
+};
+
+class TrainTicket : public Ticket {
+private:
+    string trainNumber;
+    string coachType;
+
+public:
+    TrainTicket(int id, string name, double pr, string d, string dest, string trainNo, string coach)
+        : Ticket(id, name, pr, d, dest), trainNumber(trainNo), coachType(coach) {}
+
+    void reserve() override {
+        Ticket::reserve();
+        cout << "Train booked, Train Number: " << trainNumber << ", Coach Type: " << coachType << endl;
+    }
+
+    void displayTicketInfo() const override {
+        Ticket::displayTicketInfo();
+        cout << "Train Number: " << trainNumber << endl;
+        cout << "Coach Type: " << coachType << endl;
+    }
+};
+
+class BusTicket : public Ticket {
+private:
+    string busCompany;
+    string seatNumber;
+
+public:
+    BusTicket(int id, string name, double pr, string d, string dest, string company, string seatNo)
+        : Ticket(id, name, pr, d, dest), busCompany(company), seatNumber(seatNo) {}
+
+    void cancel() override {
+        Ticket::cancel();
+        cout << "Last-minute refund allowed for bus seat " << seatNumber << " with company " << busCompany << endl;
+    }
+
+    void displayTicketInfo() const override {
+        Ticket::displayTicketInfo();
+        cout << "Bus Company: " << busCompany << endl;
+        cout << "Seat Number: " << seatNumber << endl;
+    }
+};
+
+class ConcertTicket : public Ticket {
+private:
+    string artistName;
+    string venue;
+    string seatType;
+
+public:
+    ConcertTicket(int id, string name, double pr, string d, string dest, string artist, string venueName, string seat)
+        : Ticket(id, name, pr, d, dest), artistName(artist), venue(venueName), seatType(seat) {}
+
+    void displayTicketInfo() const override {
+        Ticket::displayTicketInfo();
+        cout << "Artist: " << artistName << endl;
+        cout << "Venue: " << venue << endl;
+        cout << "Seat Type: " << seatType << endl;
+    }
+};
+
+int main() {
+    FlightTicket flight(1, "Ali", 500.0, "2025-05-10", "New York", "AirlineX", "FL123", "Business");
+    TrainTicket train(2, "Hasan", 150.0, "2025-05-12", "Boston", "TR456", "Sleeper");
+    BusTicket bus(3, "Saad", 30.0, "2025-05-15", "Philadelphia", "CityBus", "A5");
+    ConcertTicket concert(4, "Meer", 80.0, "2025-06-20", "Los Angeles", "The Rolling Stones", "Staples Center", "VIP");
+
+    flight.reserve();
+    flight.displayTicketInfo();
+    cout << endl;
+
+    train.reserve();
+    train.displayTicketInfo();
+    cout << endl;
+
+    bus.cancel();
+    bus.displayTicketInfo();
+    cout << endl;
+
+    concert.displayTicketInfo();
+
+    return 0;
+}
