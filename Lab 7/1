@@ -1,0 +1,157 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Device {
+protected:
+    int deviceID;
+    string deviceName;
+    bool status;
+    string location;
+
+public:
+    Device(int id, string name, bool stat, string loc = "")
+        : deviceID(id), deviceName(name), status(stat), location(loc) {}
+
+    virtual void turnOn() {
+        status = true;
+        cout << deviceName << " is turned ON." << endl;
+    }
+
+    virtual void turnOff() {
+        status = false;
+        cout << deviceName << " is turned OFF." << endl;
+    }
+
+    virtual bool getStatus() {
+        return status;
+    }
+
+    virtual void displayInfo() {
+        cout << "Device ID: " << deviceID << endl;
+        cout << "Device Name: " << deviceName << endl;
+        cout << "Status: " << (status ? "ON" : "OFF") << endl;
+        if (!location.empty()) {
+            cout << "Location: " << location << endl;
+        }
+    }
+};
+
+class Light : public Device {
+private:
+    string colorMode;
+
+public:
+    Light(int id, string name, bool stat, string color = "Cool", string loc = "")
+        : Device(id, name, stat, loc), colorMode(color) {}
+
+    void setColorMode(string color) {
+        colorMode = color;
+    }
+
+    void displayInfo() override {
+        Device::displayInfo();
+        cout << "Color Mode: " << colorMode << endl;
+    }
+};
+
+class Thermostat : public Device {
+private:
+    float currentTemperature;
+    string mode;
+    float targetTemperature;
+
+public:
+    Thermostat(int id, string name, bool stat, float currentTemp, string mode, float targetTemp, string loc = "")
+        : Device(id, name, stat, loc), currentTemperature(currentTemp), mode(mode), targetTemperature(targetTemp) {}
+
+    void setTargetTemperature(float temp) {
+        targetTemperature = temp;
+    }
+
+    void displayInfo() override {
+        Device::displayInfo();
+        cout << "Current Temperature: " << currentTemperature << "°C" << endl;
+        cout << "Mode: " << mode << endl;
+        cout << "Target Temperature: " << targetTemperature << "°C" << endl;
+    }
+
+    bool getStatus() override {
+        cout << "Thermostat Status: Current Temperature = " << currentTemperature << "°C, Target Temperature = " << targetTemperature << "°C" << endl;
+        return status;
+    }
+};
+
+class SecurityCamera : public Device {
+private:
+    string resolution;
+    bool recordingStatus;
+    bool nightVisionEnabled;
+
+public:
+    SecurityCamera(int id, string name, bool stat, string res, bool nightVision = false, string loc = "")
+        : Device(id, name, stat, loc), resolution(res), recordingStatus(false), nightVisionEnabled(nightVision) {}
+
+    void turnOn() override {
+        status = true;
+        recordingStatus = true;
+        cout << deviceName << " is turned ON and started recording." << endl;
+    }
+
+    void turnOff() override {
+        status = false;
+        recordingStatus = false;
+        cout << deviceName << " is turned OFF and stopped recording." << endl;
+    }
+
+    void displayInfo() override {
+        Device::displayInfo();
+        cout << "Resolution: " << resolution << endl;
+        cout << "Recording: " << (recordingStatus ? "ON" : "OFF") << endl;
+        cout << "Night Vision: " << (nightVisionEnabled ? "Enabled" : "Disabled") << endl;
+    }
+};
+
+class SmartPlug : public Device {
+private:
+    float powerConsumption;
+    int timerSetting;
+
+public:
+    SmartPlug(int id, string name, bool stat, float powerCons = 0.0, int timer = 0, string loc = "")
+        : Device(id, name, stat, loc), powerConsumption(powerCons), timerSetting(timer) {}
+
+    void setTimer(int minutes) {
+        timerSetting = minutes;
+    }
+
+    void turnOff() override {
+        Device::turnOff();
+        cout << "Logging power consumption: " << powerConsumption << " watts." << endl;
+    }
+
+    void displayInfo() override {
+        Device::displayInfo();
+        cout << "Power Consumption: " << powerConsumption << " watts" << endl;
+        cout << "Timer Setting: " << timerSetting << " minutes" << endl;
+    }
+};
+
+int main() {
+    Light livingRoomLight(1, "Living Room Light", false, "Warm", "Living Room");
+    Thermostat homeThermostat(2, "Home Thermostat", true, 22.5, "Heating", 24.0, "Living Room");
+    SecurityCamera frontDoorCamera(3, "Front Door Camera", false, "1080p", true, "Front Door");
+    SmartPlug coffeeMakerPlug(4, "Coffee Maker Plug", true, 100.5, 30, "Kitchen");
+
+    livingRoomLight.displayInfo();
+    homeThermostat.displayInfo();
+    frontDoorCamera.displayInfo();
+    coffeeMakerPlug.displayInfo();
+
+    livingRoomLight.turnOn();
+    frontDoorCamera.turnOn();
+    coffeeMakerPlug.turnOff();
+
+    return 0;
+}
