@@ -1,0 +1,57 @@
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+class Vehicle {
+public:
+    string model;
+    int year;
+
+    Vehicle(string m, int y) : model(m), year(y) {}
+
+    virtual void displayInfo() {
+        cout << "Model: " << model << endl;
+        cout << "Year: " << year << endl;
+    }
+
+    virtual ~Vehicle() {}
+};
+
+class Car : public Vehicle {
+public:
+    int numDoors;
+
+    Car(string m, int y, int d) : Vehicle(m, y), numDoors(d) {}
+
+    void displayInfo() override {
+        Vehicle::displayInfo();
+        cout << "Number of Doors: " << numDoors << endl;
+    }
+};
+
+class Truck : public Vehicle {
+public:
+    double payloadCapacity;
+
+    Truck(string m, int y, double c) : Vehicle(m, y), payloadCapacity(c) {}
+
+    void displayInfo() override {
+        Vehicle::displayInfo();
+        cout << "Payload Capacity: " << payloadCapacity << " kg" << endl;
+    }
+};
+
+int main() {
+    Car car1("Sedan", 2005, 4);
+    cout << "Car Info:" << endl;
+    car1.displayInfo();
+    cout << endl;
+
+    Truck truck1("Pickup", 2009, 1000.98);
+    cout << "Truck Info:" << endl;
+    truck1.displayInfo();
+    cout << endl;
+
+    return 0;
+}
