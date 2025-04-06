@@ -1,0 +1,78 @@
+#include <iostream>
+using namespace std;
+
+class MatrixHelper;
+
+class Matrix2x2 {
+private:
+    int m11, m12, m21, m22;
+
+public:
+    Matrix2x2(int a = 0, int b = 0, int c = 0, int d = 0) 
+        : m11(a), m12(b), m21(c), m22(d) {}
+
+    friend class MatrixHelper;
+    friend int determinant(const Matrix2x2& mat);
+    
+    Matrix2x2 operator+(const Matrix2x2& other) {
+        return Matrix2x2(m11 + other.m11, m12 + other.m12, 
+                         m21 + other.m21, m22 + other.m22);
+    }
+
+    Matrix2x2 operator-(const Matrix2x2& other) {
+        return Matrix2x2(m11 - other.m11, m12 - other.m12, 
+                         m21 - other.m21, m22 - other.m22);
+    }
+
+    Matrix2x2 operator*(const Matrix2x2& other) {
+        return Matrix2x2(m11 * other.m11 + m12 * other.m21, 
+                         m11 * other.m12 + m12 * other.m22,
+                         m21 * other.m11 + m22 * other.m21, 
+                         m21 * other.m12 + m22 * other.m22);
+    }
+
+    friend ostream& operator<<(ostream& out, const Matrix2x2& mat) {
+        out << "[" << mat.m11 << " " << mat.m12 << "]\n"
+            << "[" << mat.m21 << " " << mat.m22 << "]";
+        return out;
+    }
+};
+
+class MatrixHelper {
+public:
+    void updateElement(Matrix2x2& mat, int row, int col, int value) {
+        if (row == 1 && col == 1) mat.m11 = value;
+        else if (row == 1 && col == 2) mat.m12 = value;
+        else if (row == 2 && col == 1) mat.m21 = value;
+        else if (row == 2 && col == 2) mat.m22 = value;
+    }
+};
+
+int determinant(const Matrix2x2& mat) {
+    return mat.m11 * mat.m22 - mat.m12 * mat.m21;
+}
+
+int main() {
+    Matrix2x2 mat1(1, 2, 3, 4);
+    Matrix2x2 mat2(5, 6, 7, 8);
+    MatrixHelper help;
+
+    cout << "Matrix 1:\n" << mat1 << endl;
+    cout << "Matrix 2:\n" << mat2 << endl;
+
+    Matrix2x2 sum = mat1 + mat2;
+    cout << "Matrix 1 + Matrix 2:\n" << sum << endl;
+
+    Matrix2x2 diff = mat1 - mat2;
+    cout << "Matrix 1 - Matrix 2:\n" << diff << endl;
+
+    Matrix2x2 product = mat1 * mat2;
+    cout << "Matrix 1 * Matrix 2:\n" << product << endl;
+
+    cout << "Determinant of Matrix 1: " << determinant(mat1) << endl;
+
+    help.updateElement(mat1, 1, 2, 10);
+    cout << "Updated Matrix 1:\n" << mat1 << endl;
+
+    return 0;
+}
