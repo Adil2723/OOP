@@ -1,0 +1,58 @@
+#include <iostream>
+using namespace std;
+
+class MenuItem {
+protected:
+    string dishName;
+    double price;
+public:
+    MenuItem(string name, double p) : dishName(name), price(p) {}
+    virtual void showDetails() const = 0;
+    virtual void prepare() const = 0;
+    virtual ~MenuItem() {}
+};
+
+class Appetizer : public MenuItem {
+public:
+    Appetizer(string name, double p) : MenuItem(name, p) {}
+
+    void showDetails() const override {
+        cout << "Appetizer: " << dishName << " " << price << endl;
+    }
+
+    void prepare() const override {
+        cout << "Preparing " << dishName << ": Chopping ingredients, quick sauteing.\n";
+    }
+};
+
+class MainCourse : public MenuItem {
+public:
+    MainCourse(string name, double p) : MenuItem(name, p) {}
+
+    void showDetails() const override {
+        cout << "Main Course: " << dishName << " " << price << endl;
+    }
+
+    void prepare() const override {
+        cout << "Preparing " << dishName << ": Marinating, slow cooking, and garnishing.\n";
+    }
+};
+
+int main() {
+    MenuItem* item1 = new Appetizer("Chicken Steak", 250);
+    MenuItem* item2 = new MainCourse("Grilled Chicken", 550);
+
+    item1->showDetails();
+    item1->prepare();
+
+    cout << endl;
+
+    item2->showDetails();
+    item2->prepare();
+
+    delete item1;
+    delete item2;
+
+    return 0;
+}
+
