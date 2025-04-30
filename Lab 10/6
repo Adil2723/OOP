@@ -1,0 +1,69 @@
+#include <iostream>
+#include <fstream>
+#include <cstring>
+
+using namespace std;
+
+class InventoryItem {
+private:
+    int itemID;
+    char itemName[20];
+
+public:
+    InventoryItem(int id = 0, const char* name = "") {
+        itemID = id;
+        strncpy(itemName, name, sizeof(itemName) - 1);
+        itemName[sizeof(itemName) - 1] = '\0';
+    }
+
+    void setItemID(int id) {
+        itemID = id;
+    }
+
+    void setItemName(const char* name) {
+        strncpy(itemName, name, sizeof(itemName) - 1);
+        itemName[sizeof(itemName) - 1] = '\0';
+    }
+
+    int getItemID() const {
+        return itemID;
+    }
+
+    const char* getItemName() const {
+        return itemName;
+    }
+
+    void saveToFile(const string& filename) {
+        ofstream outFile(filename, ios::binary);
+        if (!outFile) {
+            cerr << "Error opening file for writing." << endl;
+            return;
+        }
+        outFile.write(reinterpret_cast<const char*>(this), sizeof(*this));
+        outFile.close();
+    }
+
+    void loadFromFile(const string& filename) {
+        ifstream inFile(filename, ios::binary);
+        if (!inFile) {
+            cerr << "Error opening file for reading." << endl;
+            return;
+        }
+        inFile.read(reinterpret_cast<char*>(this), sizeof(*this));
+        inFile.close();
+    }
+};
+
+int main() {
+    InventoryItem item1(101, "Laptop");
+    item1.saveToFile("inventory.dat");
+    cout << "Item data written to 'inventory.dat'" << endl;
+
+    InventoryItem item2;
+    item2.loadFromFile("inventory.dat");
+
+    cout << "Item ID: " << item2.getItemID() << endl;
+    cout << "Item Name: " << item2.getItemName() << endl;
+
+    return 0;
+}
