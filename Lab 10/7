@@ -1,0 +1,28 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    ofstream outFile("sensor_log.txt");
+
+    if (!outFile) {
+        cerr << "Error opening file for writing." << endl;
+        return 1;
+    }
+
+    outFile << "Sensor Data Log Start" << endl;
+    cout << "Write position after first write: " << outFile.tellp() << endl;
+
+    outFile << "Temperature: 22.5°C" << endl;
+    cout << "Write position after second write: " << outFile.tellp() << endl;
+
+    outFile << "Humidity: 45%" << endl;
+    cout << "Write position after third write: " << outFile.tellp() << endl;
+
+    outFile.close();
+    cout << "File closed." << endl;
+
+    return 0;
+}
