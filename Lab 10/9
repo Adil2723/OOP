@@ -1,0 +1,44 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    ofstream outFile("large_log.txt");
+
+    if (!outFile) {
+        cerr << "Error opening file for writing." << endl;
+        return 1;
+    }
+
+    outFile << "This is the first line of the log file." << endl;
+    outFile << "This is the second line with more data." << endl;
+    outFile << "Here is the third line of the log file." << endl;
+    outFile << "This is the fourth line, still more data." << endl;
+
+    outFile.close();
+
+    ifstream inFile("large_log.txt");
+
+    if (!inFile) {
+        cerr << "Error opening file for reading." << endl;
+        return 1;
+    }
+
+    char buffer[11];  // buffer to hold 10 characters + 1 for null terminator
+
+    inFile.read(buffer, 10);
+    buffer[10] = '\0';  // ensure null-termination for the string
+    cout << "Read data: " << buffer << endl;
+    cout << "Current read position: " << inFile.tellg() << endl;
+
+    inFile.read(buffer, 10);
+    buffer[10] = '\0';
+    cout << "Read data: " << buffer << endl;
+    cout << "Current read position: " << inFile.tellg() << endl;
+
+    inFile.close();
+
+    return 0;
+}
