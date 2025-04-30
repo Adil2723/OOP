@@ -1,0 +1,38 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    ofstream outFile("data_records.txt");
+
+    if (!outFile) {
+        cerr << "Error opening file for writing." << endl;
+        return 1;
+    }
+
+    outFile << "Record 1" << endl;
+    outFile << "Record 2" << endl;
+    outFile << "Record 3" << endl;
+    outFile << "Record 4" << endl;
+
+    outFile.close();
+
+    ifstream inFile("data_records.txt");
+
+    if (!inFile) {
+        cerr << "Error opening file for reading." << endl;
+        return 1;
+    }
+
+    inFile.seekg(14, ios::beg);  // Move the get pointer to the start of "Record 3"
+
+    string record;
+    getline(inFile, record);  // Read the third record
+    cout << "Third record: " << record << endl;
+
+    inFile.close();
+
+    return 0;
+}
