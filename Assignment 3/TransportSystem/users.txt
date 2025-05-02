@@ -1,0 +1,1 @@
+USR001,Ahmed,ahmed@example.com,student,1,2023-11
