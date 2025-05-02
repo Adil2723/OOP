@@ -1,0 +1,352 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <stdexcept>
+
+using namespace std;
+
+class EntityNotFoundException : public runtime_error {
+public:
+    EntityNotFoundException(const string& msg) : runtime_error(msg) {}
+};
+
+class BookingException : public runtime_error {
+public:
+    BookingException(const string& msg) : runtime_error(msg) {}
+};
+
+class PaymentException : public runtime_error {
+public:
+    PaymentException(const string& msg) : runtime_error(msg) {}
+};
+
+class SeatAssignmentException : public runtime_error {
+public:
+    SeatAssignmentException(const string& msg) : runtime_error(msg) {}
+};
+
+template <typename T>
+class SimpleList {
+private:
+    static const int MAX_SIZE = 1000;
+    T* items[MAX_SIZE];
+    int count;
+
+public:
+    SimpleList() : count(0) {
+        for (int i = 0; i < MAX_SIZE; i++) {
+            items[i] = nullptr;
+        }
+    }
+
+    ~SimpleList() {
+        for (int i = 0; i < count; i++) {
+            delete items[i];
+        }
+    }
+
+    void addItem(T* item) {
+        if (count >= MAX_SIZE) {
+            throw runtime_error("List capacity exceeded");
+        }
+        items[count++] = item;
+    }
+
+    void removeItem(T* item) {
+        for (int i = 0; i < count; i++) {
+            if (items[i] == item) {
+                delete items[i];
+                for (int j = i; j < count - 1; j++) {
+                    items[j] = items[j + 1];
+                }
+                count--;
+                items[count] = nullptr;
+                return;
+            }
+        }
+    }
+
+    T* findItem(const string& id) const {
+        for (int i = 0; i < count; i++) {
+            if (items[i]->getId() == id) {
+                return items[i];
+            }
+        }
+        throw EntityNotFoundException("Item with ID " + id + " not found");
+    }
+
+    int getCount() const { return count; }
+    T* getItem(int index) const { return items[index]; }
+
+    void saveToFile(const string& filename) const {
+        ofstream outFile(filename);
+        if (outFile.is_open()) {
+            for (int i = 0; i < count; i++) {
+                outFile << items[i]->toString() << "\n";
+            }
+            outFile.close();
+        }
+    }
+
+    void loadFromFile(const string& filename) {
+        ifstream inFile(filename);
+        if (inFile.is_open()) {
+            for (int i = 0; i < count; i++) {
+                delete items[i];
+                items[i] = nullptr;
+            }
+            count = 0;
+
+            string line;
+            while (getline(inFile, line)) {
+                if (count >= MAX_SIZE) break;
+                T* item = T::fromString(line);
+                if (item) {
+                    items[count++] = item;
+                }
+            }
+            inFile.close();
+        }
+    }
+};
+
+class User {
+protected:
+    string id;
+    string name;
+    string email;
+    string role;
+    bool paymentCompleted;
+    string lastBookingMonth;
+
+public:
+    User(const string& id, const string& name, const string& email, const string& role)
+        : id(id), name(name), email(email), role(role), paymentCompleted(false) {}
+
+    virtual ~User() {}
+
+    string getId() const { return id; }
+    string getName() const { return name; }
+    string getEmail() const { return email; }
+    string getRole() const { return role; }
+    bool hasPaymentCompleted() const { return paymentCompleted; }
+    string getLastBookingMonth() const { return lastBookingMonth; }
+
+    void completePayment() { paymentCompleted = true; }
+    void setLastBookingMonth(const string& month) { lastBookingMonth = month; }
+
+    virtual string toString() const {
+        return id + "," + name + "," + email + "," + role + "," + 
+               (paymentCompleted ? "1" : "0") + "," + lastBookingMonth;
+    }
+
+    static User* fromString(const string& data) {
+        return nullptr;
+    }
+};
+
+class Driver {
+private:
+    string id;
+    string name;
+    string licenseNumber;
+
+public:
+    Driver(const string& id, const string& name, const string& licenseNumber)
+        : id(id), name(name), licenseNumber(licenseNumber) {}
+
+    string getId() const { return id; }
+    string getName() const { return name; }
+    string getLicenseNumber() const { return licenseNumber; }
+
+    string toString() const {
+        return id + "," + name + "," + licenseNumber;
+    }
+
+    static Driver* fromString(const string& data) {
+        return nullptr;
+    }
+};
+
+class Route {
+private:
+    string id;
+    string startLocation;
+    string endLocation;
+    float distance;
+    bool isLongDistance;
+
+public:
+    Route(const string& id, const string& start, const string& end, float dist, float threshold = 20.0f)
+        : id(id), startLocation(start), endLocation(end), distance(dist) {
+        isLongDistance = (distance > threshold);
+    }
+
+    string getId() const { return id; }
+    string getStartLocation() const { return startLocation; }
+    string getEndLocation() const { return endLocation; }
+    float getDistance() const { return distance; }
+    bool isLongRoute() const { return isLongDistance; }
+
+    string toString() const {
+        return id + "," + startLocation + "," + endLocation + "," + 
+               to_string(distance) + "," + (isLongDistance ? "1" : "0");
+    }
+
+    static Route* fromString(const string& data) {
+        return nullptr;
+    }
+};
+
+class Vehicle {
+protected:
+    string id;
+    string type;
+    bool isAC;
+    int totalSeats;
+    Driver* driver;
+    Route* route;
+
+public:
+    Vehicle(const string& id, const string& type, bool ac, int seats, Driver* drv, Route* rt)
+        : id(id), type(type), isAC(ac), totalSeats(seats), driver(drv), route(rt) {}
+
+    virtual ~Vehicle() {}
+
+    string getId() const { return id; }
+    string getType() const { return type; }
+    bool isAirConditioned() const { return isAC; }
+    int getTotalSeats() const { return totalSeats; }
+    Driver* getDriver() const { return driver; }
+    Route* getRoute() const { return route; }
+
+    virtual string toString() const {
+        return id + "," + type + "," + (isAC ? "1" : "0") + "," + 
+               to_string(totalSeats) + "," + (driver ? driver->getId() : "") + "," + 
+               (route ? route->getId() : "");
+    }
+
+    static Vehicle* fromString(const string& data) {
+        return nullptr;
+    }
+};
+
+class Booking {
+private:
+    string id;
+    Vehicle* vehicle;
+    User* user;
+    int seatNumber;
+    string bookingDate;
+
+public:
+    Booking(const string& id, Vehicle* v, User* u, int seat, const string& date)
+        : id(id), vehicle(v), user(u), seatNumber(seat), bookingDate(date) {}
+
+    string getId() const { return id; }
+    Vehicle* getVehicle() const { return vehicle; }
+    User* getUser() const { return user; }
+    int getSeatNumber() const { return seatNumber; }
+    string getBookingDate() const { return bookingDate; }
+
+    string toString() const {
+        return id + "," + (vehicle ? vehicle->getId() : "") + "," + 
+               (user ? user->getId() : "") + "," + to_string(seatNumber) + "," + bookingDate;
+    }
+
+    static Booking* fromString(const string& data) {
+        return nullptr;
+    }
+};
+
+class TransportSystem {
+private:
+    SimpleList<User> users;
+    SimpleList<Driver> drivers;
+    SimpleList<Route> routes;
+    SimpleList<Vehicle> vehicles;
+    SimpleList<Booking> bookings;
+
+public:
+    void registerUser(User* user) {
+        users.addItem(user);
+    }
+
+    void addDriver(Driver* driver) {
+        drivers.addItem(driver);
+    }
+
+    void addRoute(Route* route) {
+        routes.addItem(route);
+    }
+
+    void addVehicle(Vehicle* vehicle) {
+        vehicles.addItem(vehicle);
+    }
+
+    Booking* bookSeat(User* user, Vehicle* vehicle, int seatNumber, const string& date) {
+        if (!user->hasPaymentCompleted()) {
+            throw PaymentException("Payment not completed for user " + user->getId());
+        }
+
+        if (user->getLastBookingMonth() == date.substr(0, 7)) {
+            throw BookingException("User " + user->getId() + " has already booked this month");
+        }
+
+        string bookingId = "BK" + to_string(bookings.getCount() + 1);
+        Booking* booking = new Booking(bookingId, vehicle, user, seatNumber, date);
+        bookings.addItem(booking);
+
+        user->setLastBookingMonth(date.substr(0, 7));
+
+        return booking;
+    }
+
+    void saveAllData() {
+        users.saveToFile("users.txt");
+        drivers.saveToFile("drivers.txt");
+        routes.saveToFile("routes.txt");
+        vehicles.saveToFile("vehicles.txt");
+        bookings.saveToFile("bookings.txt");
+    }
+
+    void loadAllData() {
+        users.loadFromFile("users.txt");
+        drivers.loadFromFile("drivers.txt");
+        routes.loadFromFile("routes.txt");
+        vehicles.loadFromFile("vehicles.txt");
+        bookings.loadFromFile("bookings.txt");
+    }
+};
+
+int main() {
+    TransportSystem system;
+
+    try {
+        system.loadAllData();
+
+        Driver* driver = new Driver("DRV001", "Ali Khan", "LIC12345");
+        system.addDriver(driver);
+
+        Route* route = new Route("RT001", "Gulshan", "FAST-NUCES", 15.5f);
+        system.addRoute(route);
+
+        Vehicle* vehicle = new Vehicle("VH001", "bus", true, 52, driver, route);
+        system.addVehicle(vehicle);
+
+        User* user = new User("USR001", "Ahmed", "ahmed@example.com", "student");
+        user->completePayment();
+        system.registerUser(user);
+
+        Booking* booking = system.bookSeat(user, vehicle, 12, "2023-11-15");
+        cout << "Booking created: " << booking->getId() << endl;
+
+        system.saveAllData();
+
+    } catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
+        return 1;
+    }
+
+    return 0;
+}
