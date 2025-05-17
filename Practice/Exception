@@ -1,0 +1,183 @@
+#include <iostream>
+#include <string>
+#include <exception>
+using namespace std;
+
+// -------------------- Exception Classes ----------------------
+class InvalidNameException : public exception {
+    string message;
+public:
+    InvalidNameException(const string& msg) : message(msg) {}
+    const char* what() const noexcept override {
+        return message.c_str();
+    }
+};
+
+class InvalidAgeException : public exception {
+    string message;
+public:
+    InvalidAgeException(const string& msg) : message(msg) {}
+    const char* what() const noexcept override {
+        return message.c_str();
+    }
+};
+
+class InvalidAilmentException : public exception {
+    string message;
+public:
+    InvalidAilmentException(const string& msg) : message(msg) {}
+    const char* what() const noexcept override {
+        return message.c_str();
+    }
+};
+
+class InvalidDateFormatException : public exception {
+    string message;
+public:
+    InvalidDateFormatException(const string& msg) : message(msg) {}
+    const char* what() const noexcept override {
+        return message.c_str();
+    }
+};
+
+class InvalidExperienceException : public exception {
+    string message;
+public:
+    InvalidExperienceException(const string& msg) : message(msg) {}
+    const char* what() const noexcept override {
+        return message.c_str();
+    }
+};
+
+// ---------------------- Abstract Base Class --------------------
+class Person {
+protected:
+    string name;
+    int age;
+    string gender;
+
+    void validateName(const string& n) {
+        if (n.length() < 3)
+            throw InvalidNameException("Name must be at least 3 characters long.");
+        for (char ch : n) {
+            if (!isalpha(ch) && ch != ' ')
+                throw InvalidNameException("Name must contain only letters and spaces.");
+        }
+    }
+
+    void validateAge(int a) {
+        if (a < 0 || a > 120)
+            throw InvalidAgeException("Age must be between 0 and 120.");
+    }
+
+public:
+    Person(string n, int a, string g) {
+        validateName(n);
+        validateAge(a);
+        name = n;
+        age = a;
+        gender = g;
+    }
+
+    virtual void displayDetails() const = 0;
+    virtual ~Person() {}
+};
+
+// ---------------------- Patient Class ----------------------
+class Patient : public Person {
+    string patientID;
+    string ailment;
+    string admitDate;
+
+    void validateAilment(const string& a) {
+        if (a.empty())
+            throw InvalidAilmentException("Ailment cannot be empty.");
+    }
+
+    void validateDate(const string& date) {
+        if (date.length() != 10 || date[2] != '-' || date[5] != '-')
+            throw InvalidDateFormatException("Date must be in DD-MM-YYYY format.");
+    }
+
+public:
+    Patient(string n, int a, string g, string pid, string ail, string date)
+        : Person(n, a, g), patientID(pid) {
+        validateAilment(ail);
+        validateDate(date);
+        ailment = ail;
+        admitDate = date;
+    }
+
+    void displayDetails() const override {
+        cout << "\n--- Patient Details ---\n";
+        cout << "Name: " << name << "\nAge: " << age << "\nGender: " << gender << endl;
+        cout << "Patient ID: " << patientID << "\nAilment: " << ailment << "\nAdmit Date: " << admitDate << endl;
+    }
+};
+
+// ---------------------- Doctor Class ----------------------
+class Doctor : public Person {
+    string doctorID;
+    string specialization;
+    int yearsOfExperience;
+    static int doctorCount;
+
+    void validateExperience(int yoe) {
+        if (yoe < 1 || yoe > 50)
+            throw InvalidExperienceException("Years of experience must be between 1 and 50.");
+    }
+
+public:
+    Doctor(string n, int a, string g, string did, string spec, int yoe)
+        : Person(n, a, g), doctorID(did), specialization(spec) {
+        if (specialization.empty())
+            throw InvalidAilmentException("Specialization cannot be empty.");
+        validateExperience(yoe);
+        yearsOfExperience = yoe;
+        doctorCount++;
+    }
+
+    void displayDetails() const override {
+        cout << "\n--- Doctor Details ---\n";
+        cout << "Name: " << name << "\nAge: " << age << "\nGender: " << gender << endl;
+        cout << "Doctor ID: " << doctorID << "\nSpecialization: " << specialization
+             << "\nExperience: " << yearsOfExperience << " years" << endl;
+    }
+
+    friend void showDoctorPrivate(const Doctor& d);
+
+    static int getDoctorCount() {
+        return doctorCount;
+    }
+};
+
+int Doctor::doctorCount = 0;
+
+void showDoctorPrivate(const Doctor& d) {
+    cout << "\n(Accessed by friend) Doctor " << d.name << " has specialization in " << d.specialization << "." << endl;
+}
+
+// ---------------------- Main Function ----------------------
+int main() {
+    try {
+        Patient p1("Alice", 25, "Female", "P101", "Fever", "17-05-2025");
+        Doctor d1("Dr John", 45, "Male", "D202", "Cardiology", 20);
+
+        Person* people[2];
+        people[0] = &p1;
+        people[1] = &d1;
+
+        for (int i = 0; i < 2; ++i) {
+            people[i]->displayDetails();
+        }
+
+        cout << "\nTotal Doctors: " << Doctor::getDoctorCount() << endl;
+        showDoctorPrivate(d1);
+
+    } catch (const exception& ex) {
+        cout << "\nException: " << ex.what() << endl;
+    }
+
+    return 0;
+}
+//used ai 
